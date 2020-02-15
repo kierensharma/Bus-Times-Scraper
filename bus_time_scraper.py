@@ -104,3 +104,5 @@ def main(sc):
 
 s.enter(0, 1, main, (s,))
 s.run()
+
+print("Hello World")
