@@ -67,40 +67,40 @@ def main(sc):
 	services = r.text.split('"times"')[1].split('{')
 	services.pop(0)
 	services.pop(-1)
-	
+
 # 	Generates CSV file to write data onto
 
 	csv_file = open('Bus_Times.csv', 'a')
 	csv_writer = csv.writer(csv_file)
 	# csv_writer.writerow(['Time Requested', 'Service', 'Destination', 'Due'])
-	
+
 # 	A for loop which goes through the list of services and parses RTI data for each
-	
+
 	for i in services:
 		service_number = i.split(',')[1].split(':')[1]
 		service_number = service_number[1:-1]
-		
+
 		destination = i.split(':')[3]
 		destination = destination[1:-7]
-		
+
 		time_due = i.split(',')[-4].split(':')[1]
 		time_due = time_due[1:-1]
-		
+
 		print("Service:", service_number, ", Destination:", destination, ", Due:",time_due)
-		
+
 		csv_writer.writerow([time_requested, service_number, destination, time_due])
-		
-	csv_writer.writerow([])	
+
+	csv_writer.writerow([])
 	csv_file.close()
-	
+
 # 	Begins time interval after function is called
-	
+
 	s.enter(120, 1, main, (sc,))
-			
+
 # if __name__ == "__main__":
 # 	main()
 
 # Continues to call function every 2 minutes until terminated
-	
-s.enter(120, 1, main, (s,))
+
+s.enter(0, 1, main, (s,))
 s.run()
