@@ -69,6 +69,32 @@ def main(sc):
     services.pop(0)
     services.pop(-1)
 
+    # Opens CSV file with timetabled data and adds to list for each service
+
+    service_1 = []
+    service_2 = []
+    service_3 = []
+    service_4 = []
+    service_9 = []
+    service_U1 = []
+
+    with open('timetable.csv') as timetable_csv:
+        readCSV = csv.reader(timetable_csv, delimiter=',')
+        for row in readCSV:
+            service_1_time = row[0]
+            service_2_time = row[1]
+            service_3_time = row[2]
+            service_4_time = row[3]
+            service_9_time = row[4]
+            service_U1_time = row[5]
+
+            service_1.append(service_1_time)
+            service_2.append(service_2_time)
+            service_3.append(service_3_time)
+            service_4.append(service_4_time)
+            service_9.append(service_9_time)
+            service_U1.append(service_U1_time)
+
     # Generates CSV file to write data onto
 
     csv_file = open('Bus_Real_Time_Information.csv', 'a')
@@ -86,6 +112,8 @@ def main(sc):
 
         mins_due = i.split(',')[-4].split(':')[1]
         mins_due = mins_due[1:-1]
+
+        # Converts 'minutes due' variable into integer value
 
         if mins_due == "Due now":
             mins_due = 0
