@@ -83,10 +83,10 @@ def main(sc):
 		destination = i.split(':')[3]
 		destination = destination[1:-7]
 
-		time_due = i.split(',')[-4].split(':')[1]
-		time_due = time_due[1:-1]
+		mins_due = i.split(',')[-4].split(':')[1]
+		mins_due = mins_due[1:-1]
 
-		print("Service:", service_number, ", Destination:", destination, ", Due:",time_due)
+		print("Service:", service_number, ", Destination:", destination, ", Due:",mins_due)
 
 		csv_writer.writerow([time_requested, service_number, destination, time_due])
 
