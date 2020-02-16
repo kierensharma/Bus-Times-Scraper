@@ -70,7 +70,7 @@ def main(sc):
 
 # 	Generates CSV file to write data onto
 
-	csv_file = open('Bus_Times.csv', 'a')
+	csv_file = open('Bus_Real_Time_Information.csv', 'a')
 	csv_writer = csv.writer(csv_file)
 	# csv_writer.writerow(['Time Requested', 'Service', 'Destination', 'Due'])
 
