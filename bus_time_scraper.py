@@ -56,50 +56,60 @@ s = sched.scheduler(time.time, time.sleep)
 # Main function to generate request and parse HTML data from network response
 
 def main(sc):
-	stop_name = "Clifton Down Station"
-	print("Stop: ", stop_name)
-	r = requests.post('https://www.firstgroup.com/getNextBus', headers=headers, cookies=cookies, data=data)
-	now = datetime.now()
-	time_requested = now.strftime("%H:%M:%S")
-	print("Time Requested: ", time_requested, "\n")
+    stop_name = "Clifton Down Station"
+    print("Stop: ", stop_name)
+    r = requests.post('https://www.firstgroup.com/getNextBus', headers=headers, cookies=cookies, data=data)
+    now = datetime.now()
+    time_requested = now.strftime("%H:%M:%S")
+    print("Time Requested: ", time_requested, "\n")
 
-# 	Parsing the network response into each service
+    # Parsing the network response into each service
 
-	services = r.text.split('"times"')[1].split('{')
-	services.pop(0)
-	services.pop(-1)
+    services = r.text.split('"times"')[1].split('{')
+    services.pop(0)
+    services.pop(-1)
 
-# 	Generates CSV file to write data onto
+    # Generates CSV file to write data onto
 
-	csv_file = open('Bus_Real_Time_Information.csv', 'a')
-	csv_writer = csv.writer(csv_file)
-	# csv_writer.writerow(['Time Requested', 'Service', 'Destination', 'Due'])
+    csv_file = open('Bus_Real_Time_Information.csv', 'a')
+    csv_writer = csv.writer(csv_file)
+    # csv_writer.writerow(['Time Requested', 'Service', 'Destination', 'Due'])
 
-# 	A for loop which goes through the list of services and parses RTI data for each
+    # A for loop which goes through the list of services and parses RTI data for each
 
-	for i in services:
-		service_number = i.split(',')[1].split(':')[1]
-		service_number = service_number[1:-1]
+    for i in services:
+        service_number = i.split(',')[1].split(':')[1]
+        service_number = service_number[1:-1]
 
-		destination = i.split(':')[3]
-		destination = destination[1:-7]
+        destination = i.split(':')[3]
+        destination = destination[1:-7]
 
-		mins_due = i.split(',')[-4].split(':')[1]
-		mins_due = mins_due[1:-1]
+        mins_due = i.split(',')[-4].split(':')[1]
+        mins_due = mins_due[1:-1]
 
-		print("Service:", service_number, ", Destination:", destination, ", Due:",mins_due)
+        if mins_due == "Due now":
+            mins_due = 0
+        else:
+            mins_due = mins_due[0:-4]
+            mins_due = int(mins_due)
 
-		csv_writer.writerow([time_requested, service_number, destination, time_due])
+        time_due = datetime.now() + timedelta(minutes=mins_due)
 
-	csv_writer.writerow([])
-	csv_file.close()
+        print(time_due)
 
-# 	Begins time interval after function is called
+        print("Service:", service_number, ", Destination:", destination, ", Due:",mins_due)
 
-	s.enter(120, 1, main, (sc,))
+        csv_writer.writerow([time_requested, service_number, destination, mins_due, time_due])
+
+    csv_writer.writerow([])
+    csv_file.close()
+
+    # Begins time interval after function is called
+
+    s.enter(120, 1, main, (sc,))
 
 # if __name__ == "__main__":
-# 	main()
+#     main()
 
 # Continues to call function every 2 minutes until terminated
 
