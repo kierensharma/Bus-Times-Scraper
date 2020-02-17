@@ -60,6 +60,7 @@ def main(sc):
     print("Stop: ", stop_name)
     r = requests.post('https://www.firstgroup.com/getNextBus', headers=headers, cookies=cookies, data=data)
     now = datetime.now()
+    timetabled_time = "Unknown"
     time_requested = now.strftime("%H:%M:%S")
     print("Time Requested: ", time_requested, "\n")
 
@@ -117,16 +118,37 @@ def main(sc):
 
         if mins_due == "Due now":
             mins_due = 0
-        else:
+            time_due = datetime.now() + timedelta(minutes=mins_due)
+        elif mins_due[-1] == 's':
             mins_due = mins_due[0:-4]
             mins_due = int(mins_due)
+            time_due = datetime.now() + timedelta(minutes=mins_due)
+        else:
+            time_due = datetime.strptime(mins_due, '%H:%M:%S')
+            print(time_due)
 
-        time_due = datetime.now() + timedelta(minutes=mins_due)
+        time_due = time_dues[:-6]
 
-        print(time_due)
+        # Logical statement to find timetabled time
 
-        print("Service:", service_number, ", Destination:", destination, ", Due:",mins_due)
+        if service_number == '1':
+            for i in service_1[1:73]:
+                i = datetime.now().strftime("%Y-%m-%d ") + i
+                i_time = datetime.strptime(i, '%Y-%m-%d %H:%M:%S')
+                print(time_due)
+                print(i_time)
+                upper_time_limit = i_time + timedelta(minutes=10)
+                print(upper_time_limit)
+                lower_time_limit = i_time - timedelta(minutes=10)
+                print(lower_time_limit)
+                if (time_due >= lower_time_limit and time_due <= upper_time_limit):
+                    timetabled_time = i_time
+                else:
+                    timetabled_time = "Unknown"
 
+        print("Service:", service_number, ", Destination:", destination, ", Due:",mins_due, ", Timetabled:",timetabled_time)
+
+        timetabled_time = "Unknown"
         csv_writer.writerow([time_requested, service_number, destination, mins_due, time_due])
 
     csv_writer.writerow([])
@@ -135,9 +157,6 @@ def main(sc):
     # Begins time interval after function is called
 
     s.enter(120, 1, main, (sc,))
-
-# if __name__ == "__main__":
-#     main()
 
 # Continues to call function every 2 minutes until terminated
 
