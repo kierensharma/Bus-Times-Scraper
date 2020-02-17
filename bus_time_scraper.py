@@ -62,19 +62,19 @@ def main(sc):
 	time_requested = now.strftime("%H:%M:%S")
 	print("Time Requested: ", time_requested, "\n")
 
-# 	Parsing the network response into each service
+	# Parsing the network response into each service
 
 	services = r.text.split('"times"')[1].split('{')
 	services.pop(0)
 	services.pop(-1)
 
-# 	Generates CSV file to write data onto
+	# Generates CSV file to write data onto
 
 	csv_file = open('Bus_Real_Time_Information.csv', 'a')
 	csv_writer = csv.writer(csv_file)
 	# csv_writer.writerow(['Time Requested', 'Service', 'Destination', 'Due'])
 
-# 	A for loop which goes through the list of services and parses RTI data for each
+	# A for loop which goes through the list of services and parses RTI data for each
 
 	for i in services:
 		service_number = i.split(',')[1].split(':')[1]
@@ -88,12 +88,12 @@ def main(sc):
 
 		print("Service:", service_number, ", Destination:", destination, ", Due:",mins_due)
 
-		csv_writer.writerow([time_requested, service_number, destination, time_due])
+		csv_writer.writerow([time_requested, service_number, destination, mins_due])
 
 	csv_writer.writerow([])
 	csv_file.close()
 
-# 	Begins time interval after function is called
+	# Begins time interval after function is called
 
 	s.enter(120, 1, main, (sc,))
 
